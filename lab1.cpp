@@ -88,7 +88,7 @@ vector<DataWrapper> createCircle(const array<float, 2> center, const float radiu
   return {data};
 }
 
-// - center and radius ar the center and radius of the biggest circle,
+// - center and radius are the center and radius of the biggest circle,
 // - reduction is the ratio that the radius of a circle will have compared to 
 //   the radius of the previous circle, 
 // - amount is the number of circles that will be drawn
@@ -109,7 +109,7 @@ vector<DataWrapper> createCirclesInsideCircle(const array<float, 2> center, floa
   return data;
 }
 
-// - center and radius ar the center and radius of the biggest circle,
+// - center and radius are the center and radius of the biggest circle,
 // - reduction is the ratio that the radius of a circle will have compared to 
 //   the radius of the previous circle, 
 // - amount is the number of circles that will be drawn
@@ -135,7 +135,7 @@ constexpr float degToRad(float angle) {
     return angle * PI / 180.0f;
 }
 
-// - center and radius ar the center and radius of the biggest circle,
+// - center and radius are the center and radius of the biggest circle,
 // - angle is the inclination angle in degrees,
 // - reduction is the ratio that the radius of a circle will have compared to 
 //   the radius of the previous circle, 
@@ -233,6 +233,8 @@ int main() {
   }
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
+
+  // // // // // // // // // // // 
   vector<DataWrapper> dataVec ;
   // dataVec = createSquare({-100.0f, -100.0f}, 200.0f); // 1 square
   // dataVec = createCircle({100.0f, -100.0f}, 400.0); // 2 circle
