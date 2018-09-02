@@ -1,6 +1,7 @@
 #include "glad.h"
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 const GLuint WIDTH = 800, HEIGHT = 600;
@@ -18,8 +19,10 @@ const char * fragmentShaderSrc = R"(
 #version 330 core
 
 out vec4 FragColor;
+uniform vec4 outColor;
+
 void main() {
-  FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+  FragColor = outColor;
 })";
 
 void frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
@@ -142,7 +145,12 @@ int main() {
 
     glUseProgram(shaderProgram);
     //glBindVertexArray(vao);
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
+
+    float greenValue = sin(glfwGetTime());
+    GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "outColor");
+    glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
+    glDrawArrays(GL_TRIANGLES, 0, 4);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
