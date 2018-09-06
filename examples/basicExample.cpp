@@ -10,19 +10,21 @@ const char *vertexShaderSrc = R"(
 #version 330 core
 
 layout (location = 0) in vec3 aPos;
-uniform vec2 windowSzie;
+layout (location = 1) in vec3 inColor;
+out vec3 outColor;
 void main() {
-  gl_Position = vec4(aPos.x / 800.0f , aPos.y / 600.0f, aPos.z, 1.0);
+  gl_Position = vec4(aPos, 1.0);
+  outColor = inColor;
 })";
 
 const char * fragmentShaderSrc = R"(
 #version 330 core
 
 out vec4 FragColor;
-uniform vec4 outColor;
+in vec3 outColor;
 
 void main() {
-  FragColor = outColor;
+  FragColor = vec4(outColor, 1.0);
 })";
 
 void frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
@@ -101,30 +103,23 @@ int main() {
 
   // Vertex data 
   GLfloat vertices[] = {
-    /*
-    -0.5f, -0.5f, 0.0f, // left  
-    0.5f, -0.5f, 0.0f, // right 
-    0.5f,  0.5f, 0.0f,  // top  
-    -0.5f, 0.5f, 0.0f
-    */
-    -200.0f, -200.0f, 0.0f,
-    200.0f, -200.0f, 0.0f,
-    200.0f, 200.0f, 0.0f,
-    -200.0f, 200.0f, 0.0f,
+    0.5f, -0.5f, 0.0f, // left  
+    -0.5f, -0.5f, 0.0f, // right 
+    0.0f,  0.5f, 0.0f,  // top  
   };
 
- GLfloat vertices2[] = {
-    -100.0f, -100.0f, 0.0f,
-    100.0f, -100.0f, 0.0f,
-    100.0f, 100.0f, 0.0f,
-    -100.0f, 100.0f, 0.0f
+ GLfloat colors[] = {
+    1.0f, 0.0f, 0.0f, // red
+    0.0f, 1.0f, 0.0f, // green 
+    0.0f, 0.0f, 1.0f,  // blue  
   };
 
 
 
-  GLuint vbo, vao, vbo2;
+  GLuint vbo, vao, vboColors;
   glGenVertexArrays(1, &vao);
   glGenBuffers(1, &vbo);
+  glGenBuffers(1, &vboColors);
 
   glBindVertexArray(vao);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -132,6 +127,13 @@ int main() {
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void *) 0);
   glEnableVertexAttribArray(0);
+
+  // Setting the colors using other VBO
+  glBindBuffer(GL_ARRAY_BUFFER, vboColors);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void *) 0);
+  glEnableVertexAttribArray(1);
 
   // Unbinding the buffer because it is already registered in the VAO.
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -146,11 +148,7 @@ int main() {
     glUseProgram(shaderProgram);
     //glBindVertexArray(vao);
 
-    float greenValue = sin(glfwGetTime());
-    GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "outColor");
-    glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
-
-    glDrawArrays(GL_TRIANGLES, 0, 4);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
