@@ -1,4 +1,5 @@
 #include "glad.h"
+#include "helpers/shader.hpp"
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <array>
@@ -14,23 +15,6 @@ struct DataWrapper {
   GLuint vao;
   GLuint vbo;
 };
-
-const char *vertexShaderSrc = R"(
-#version 330 core
-
-layout (location = 0) in vec3 aPos;
-uniform vec2 windowSzie;
-void main() {
-  gl_Position = vec4(aPos.x / 800.0f , aPos.y / 600.0f, aPos.z, 1.0);
-})";
-
-const char * fragmentShaderSrc = R"(
-#version 330 core
-
-out vec4 FragColor;
-void main() {
-  FragColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-})";
 
 void frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
     cout << "Width and height: " << width << ", " << height << "\n";
@@ -197,42 +181,7 @@ int main() {
 
   // Build and compile shader programs.
   // Vertex shader.
-  GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vertexShader, 1, &vertexShaderSrc, nullptr);
-  glCompileShader(vertexShader);
-  // Check compilation errors
-  GLint success;
-  char infoLog[512];
-  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-    cout << "ERROR: Vertex shader compilation failed:\n" << infoLog << '\n';
-  }
-
-  // Fragment shader.
-  GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fragmentShader, 1, &fragmentShaderSrc, nullptr);
-  glCompileShader(fragmentShader);
-  // Check compilation errors.
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-    cout << "ERROR: Fragment shader compilation failed:\n" << infoLog << '\n';
-  }
-
-  // Link shaders.
-  GLuint shaderProgram = glCreateProgram();
-  glAttachShader(shaderProgram, vertexShader);
-  glAttachShader(shaderProgram, fragmentShader);
-  glLinkProgram(shaderProgram);
-  // Check link errors.
-  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-  if (!success) {
-    glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-    cout << "ERROR: Program linking failed:\n" << infoLog << '\n';
-  }
-  glDeleteShader(vertexShader);
-  glDeleteShader(fragmentShader);
+  Shader shaders("shaders/lab1_v.glsl", "shaders/lab1_f.glsl");
 
   // // // // // // // // // // // 
   vector<DataWrapper> dataVec ;
@@ -240,7 +189,7 @@ int main() {
   // dataVec = createCircle({100.0f, -100.0f}, 400.0); // 2 circle
   // dataVec = createCirclesInsideCircle({0.0f, 100.0f}, 400.0f, 0.8f, 6); // 3 circles inside circle
   // dataVec = createCirclesLine1({-500.0f, 0.0f}, 200.0f, 0.8f, 6); // 4 circle line
-  // dataVec = createCirclesLine2({-500.0f, 0.0f}, 150.0f, 25, 0.8f, 6); // 5 circle line with inclination
+  dataVec = createCirclesLine2({-500.0f, 0.0f}, 150.0f, 25, 0.8f, 6); // 5 circle line with inclination
 
   // Anti aliasing
   glEnable(GL_LINE_SMOOTH);
@@ -253,7 +202,7 @@ int main() {
     glClearColor(0.95f, 0.95f, 0.95f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glUseProgram(shaderProgram);
+    shaders.use();
     for (const auto &data : dataVec) {
       glBindVertexArray(data.vao);
       glDrawArrays(GL_LINE_LOOP, 0, CIRCLE_VERTEX_AMOUNT); // TODO: change this so it works with the square too
