@@ -1,4 +1,5 @@
-#include "glad/glad.h"
+#include <glad/glad.h>
+#include <glm/gtc/matrix_transform.hpp>
 #include "helpers/shader.hpp"
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -83,6 +84,18 @@ int main() {
   // This is optional, unbinding VAO.
   //glBindVertexArray(0);
 
+  // MVP
+  //glm::mat4 projectionMat = glm::perspective(glm::radians(45.0f), float(WIDTH) / HEIGHT, 0.1f, 100.0f);
+  // For ortho camera:
+  glm::mat4 projectionMat = glm::ortho(-1.0f,1.0f,-1.0f,1.0f,0.0f,100.0f); // In world coordinates
+
+  glm::mat4 viewMat = glm::lookAt(glm::vec3{4,3,3}, {0,0,0}, {0,1,0});
+
+  glm::mat4 modelMat = glm::mat4(1.0f);
+
+  glm::mat4 mvp = projectionMat * viewMat * modelMat;
+  GLuint matrixId = glGetUniformLocation(shaders.ID, "mvp");
+
   // Main loop
   while (!glfwWindowShouldClose(window)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -90,7 +103,7 @@ int main() {
 
     shaders.use();
     //glBindVertexArray(vao);
-
+    glUniformMatrix4fv(matrixId, 1, GL_FALSE, &mvp[0][0]);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glfwSwapBuffers(window);
