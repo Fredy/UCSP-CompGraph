@@ -158,6 +158,7 @@ int main() {
   }
 
   // GLFW setup
+  glfwWindowHint(GLFW_SAMPLES, 4); // Anti aliasing
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -190,12 +191,6 @@ int main() {
   // dataVec = createCirclesInsideCircle({0.0f, 100.0f}, 400.0f, 0.8f, 6); // 3 circles inside circle
   // dataVec = createCirclesLine1({-500.0f, 0.0f}, 200.0f, 0.8f, 6); // 4 circle line
   dataVec = createCirclesLine2({-500.0f, 0.0f}, 150.0f, 25, 0.8f, 6); // 5 circle line with inclination
-
-  // Anti aliasing
-  glEnable(GL_LINE_SMOOTH);
-  glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Main loop
   while (!glfwWindowShouldClose(window)) {
