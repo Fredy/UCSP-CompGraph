@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(GLAD_SRC vendor/glad/glad.cpp 
              vendor/glad/glad.h)
-set(HELPERS_SRC src/helpers/shader.hpp)
+set(HELPERS_SRC src/helpers/shader.hpp
+                src/helpers/object.hpp)
 
 # Use this insted of target_include_directories, because this is global
 include_directories(src vendor)
@@ -24,3 +25,6 @@ target_link_libraries(example PUBLIC  ${ALL_LIBS})
 
 add_executable(lab1 src/lab1.cpp ${HELPERS_SRC})
 target_link_libraries(lab1 PUBLIC  ${ALL_LIBS})
+
+add_executable(lab2 src/lab2.cpp ${HELPERS_SRC})
+target_link_libraries(lab2 PUBLIC  ${ALL_LIBS})
