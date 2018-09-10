@@ -61,4 +61,11 @@ public:
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(2, vbo);
   }
+
+  void setExternalData(GLuint vao, GLuint vbo1, GLuint vbo2, int size) {
+    this->vao =  vao;
+    this->vbo[0] = vbo1;
+    this->vbo[1] = vbo2;
+    numVertices = size;
+  }
 };
