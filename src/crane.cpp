@@ -42,16 +42,16 @@ array<float, 3> processInput(GLFWwindow *window, float arm1Angle,
   return {arm1Angle, arm2Angle, ropeScale};
 }
 
-Object buildRectangle(float left, float bottom, float width, float height,
+Object buildRectangle(float left, float bottom, float width, float height, float depth,
                       GLuint shaderId) {
   GLfloat vertices[] = {
-      left,         bottom,          0.0f, // bl
-      left + width, bottom,          0.0f, // br
-      left + width, bottom + height, 0.0f, // tr
+      left,         bottom,          -depth, // bl
+      left + width, bottom,         -depth, // br
+      left + width, bottom + height, -depth, // tr
 
-      left,         bottom,          0.0f, // bl
-      left + width, bottom + height, 0.0f, // tr
-      left,         bottom + height, 0.0f, // tl
+      left,         bottom,          -depth, // bl
+      left + width, bottom + height, -depth, // tr
+      left,         bottom + height, -depth, // tl
   };
   Object rectangle;
   rectangle.setVerticesData(6, vertices);
@@ -134,15 +134,16 @@ int main() {
   float boxW = boxH;
   float ropeH = 80.0f;
 
-  Object base = buildRectangle(0, 0, baseW, baseH, oneColorShader.ID);
+  Object base = buildRectangle(0, 0, baseW, baseH, 0, oneColorShader.ID);
   Object arm1 =
-      buildRectangle(-arm1W / 2.0f, 0, arm1W, arm1H, oneColorShader.ID);
+      buildRectangle(-arm1W / 2.0f, 0, arm1W, arm1H,10, oneColorShader.ID);
   Object arm2 =
-      buildRectangle(0, -arm2H / 2.0f, arm2W, arm2H, oneColorShader.ID);
-  Object box = buildRectangle(-boxW / 2.0f, 0, boxW, boxH, oneColorShader.ID);
+      buildRectangle(0, -arm2H / 2.0f, arm2W, arm2H,10, oneColorShader.ID);
+  Object box = buildRectangle(-boxW / 2.0f, 0, boxW, boxH,1, oneColorShader.ID);
 
   GLfloat ropeVertices[] = {
-      0.0f, -ropeH, 0.0f, 0.0f, 0.0f, 0.0f,
+      0.0f, -ropeH, 0.0f,  //
+      0.0f, 0.0f, 0.0f,  //
   };
 
   Object rope;
@@ -170,13 +171,14 @@ int main() {
   GLint colorId = glGetUniformLocation(oneColorShader.ID, "inColor");
 
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glEnable(GL_DEPTH_TEST);
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   // Main loop
   float arm1Angle = -30.0f;
   float arm2Angle = 40.0f;
   float ropeScale = 1.0f;
   while (!glfwWindowShouldClose(window)) {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     projectionMat = glm::ortho(-WIDTH / 4.0f, WIDTH / 4.0f, -HEIGHT / 4.0f,
                                HEIGHT / 4.0f, 0.0f,
                                100.0f); // In world coordinates
