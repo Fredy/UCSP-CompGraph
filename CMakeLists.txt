@@ -38,3 +38,6 @@ target_link_libraries(crane PUBLIC  ${ALL_LIBS})
 
 add_executable(lab3 src/lab3.cpp ${HELPERS_SRC})
 target_link_libraries(lab3 PUBLIC  ${ALL_LIBS})
+
+add_executable(lab3_1 src/lab3_1.cpp ${HELPERS_SRC})
+target_link_libraries(lab3_1 PUBLIC  ${ALL_LIBS})
