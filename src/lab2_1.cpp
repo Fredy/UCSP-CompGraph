@@ -186,6 +186,7 @@ int main() {
       // Rotation in it self.
       modelMat = glm::rotate(modelMat, glm::radians(3.0f *i), {0.0f, 1.0f, 0.0f});
       modelMat = glm::scale(modelMat, {0.5f, 0.5f, 0.5f});
+      viewMat = glm::lookAt(glm::vec3{90, 80, 90}, {modelMat[3][0], modelMat[3][1],modelMat[3][2]}, {0, 1, 0});
       mvp = projectionMat * viewMat * modelMat;
       glUniform3f(colorId, 0.16f, 0.23f, 0.88f);
       glUniformMatrix4fv(matrixIdOneColorShader, 1, GL_FALSE, &mvp[0][0]);
