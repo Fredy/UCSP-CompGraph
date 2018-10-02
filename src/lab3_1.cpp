@@ -9,45 +9,41 @@
 #include <array>
 using namespace std;
 
-const GLuint WIDTH = 800, HEIGHT = 600;
+GLuint WIDTH = 800, HEIGHT = 600;
 
-int cameraX = 90, cameraZ = 90;
+int cameraX = 0, cameraZ = 0;
 int cameraAtX = 0, cameraAtY = 0;
 
 void frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
   cout << "Width and height: " << width << ", " << height << "\n";
+  WIDTH = width;
+  HEIGHT = height;
   glViewport(0, 0, width, height);
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   if (key == GLFW_KEY_UP && action == GLFW_REPEAT) {
-    cameraX--;
-  }
-  if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT) {
-    cameraX++;
-  }
-  if (key == GLFW_KEY_LEFT && action == GLFW_REPEAT) {
     cameraZ--;
   }
-  if (key == GLFW_KEY_RIGHT && action == GLFW_REPEAT) {
+  if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT) {
     cameraZ++;
+  }
+  if (key == GLFW_KEY_LEFT && action == GLFW_REPEAT) {
+    cameraX--;
+  }
+  if (key == GLFW_KEY_RIGHT && action == GLFW_REPEAT) {
+    cameraX++;
   }
 }
 
 static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
   double centerX = WIDTH / 2.0;
   double centerY = HEIGHT / 2.0;
+  //glfwSetCursorPos(window, centerX, centerY);
+  float speed = 1.11f;
+  cameraAtX = speed * float(centerX - xpos);
+  cameraAtY = speed * float(centerY - ypos);
 
-  if (xpos > centerX) {
-    cameraAtX++;
-  } else {
-    cameraAtX--;
-  }
-  if (ypos > centerY) {
-    cameraAtY++;
-  } else {
-    cameraAtY--;
-  }
 }
 
 int main() {
@@ -116,13 +112,13 @@ int main() {
 
 
   // MVP
-   glm::mat4 projectionMat = glm::perspective(glm::radians(90.0f),
-   float(WIDTH) / HEIGHT, 0.1f, 250.0f);
+  glm::mat4 projectionMat = glm::perspective(
+      glm::radians(70.0f), float(WIDTH) / HEIGHT, 0.1f, 250.0f);
   // For ortho camera:
   // glm::mat4 projectionMat = glm::ortho(-400.0f, 400.0f, -300.0f, 300.0f, 0.0f,
                                       //  100.0f); // In world coordinates
 
-  glm::mat4 viewMat = glm::lookAt(glm::vec3{cameraX, 80, cameraZ}, {cameraAtX, cameraAtY, 0}, {0, 1, 0});
+  glm::mat4 viewMat = glm::mat4(1.0);// glm::lookAt(glm::vec3{90, 90, 90}, {cameraX, 0, cameraZ}, {0, 1, 0});
 
   glm::mat4 modelMat = glm::mat4(1.0f);
   //modelMat = glm::scale(modelMat, {0.2f, 0.2f, 0.2f});
@@ -132,21 +128,22 @@ int main() {
 
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   // Main loop
-  float i = 0.0f;
   while (!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT);
-  viewMat = glm::lookAt(glm::vec3{cameraX, 10, cameraZ}, {cameraAtX, cameraAtY, 0}, {0, 1, 0});
+
+  // viewMat = glm::lookAt(glm::vec3{0, 90, 90}, glm::vec3{cameraX, 0, cameraZ}, {0, 1, 0});
 
     //  XYZ
     gizmo.draw([&] {
       modelMat = glm::mat4(1.0f);
+      modelMat = glm::translate(modelMat, {cameraX, 0, cameraZ - 90});
+      modelMat = glm::rotate(modelMat, 1.0f, {cameraAtX, cameraAtY, 0});
       mvp = projectionMat * viewMat * modelMat;
       glUniformMatrix4fv(matrixId, 1, GL_FALSE, &mvp[0][0]);
     });
 
     glfwSwapBuffers(window);
     glfwPollEvents();
-    i += 1.0f;
   }
 
   gizmo.destroy();
