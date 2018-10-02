@@ -12,7 +12,7 @@ using namespace std;
 GLuint WIDTH = 800, HEIGHT = 600;
 
 int cameraX = 0, cameraZ = 0;
-int cameraAtX = 0, cameraAtY = 0;
+float cameraAtX = 0, cameraAtY = 0;
 
 void frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
   cout << "Width and height: " << width << ", " << height << "\n";
@@ -40,7 +40,7 @@ static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
   double centerX = WIDTH / 2.0;
   double centerY = HEIGHT / 2.0;
   //glfwSetCursorPos(window, centerX, centerY);
-  float speed = 1.11f;
+  float speed = 0.01f;
   cameraAtX = speed * float(centerX - xpos);
   cameraAtY = speed * float(centerY - ypos);
 
@@ -137,7 +137,8 @@ int main() {
     gizmo.draw([&] {
       modelMat = glm::mat4(1.0f);
       modelMat = glm::translate(modelMat, {cameraX, 0, cameraZ - 90});
-      modelMat = glm::rotate(modelMat, 1.0f, {cameraAtX, cameraAtY, 0});
+      modelMat = glm::rotate(modelMat, cameraAtX, {0, 1, 0});
+      modelMat = glm::rotate(modelMat, cameraAtY, {1, 0, 0});
       mvp = projectionMat * viewMat * modelMat;
       glUniformMatrix4fv(matrixId, 1, GL_FALSE, &mvp[0][0]);
     });
