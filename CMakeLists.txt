@@ -8,7 +8,8 @@ set(GLAD_SRC vendor/glad/glad.cpp
              vendor/glad/glad.h)
 set(HELPERS_SRC src/helpers/shader.hpp
                 src/helpers/object.hpp
-                src/helpers/objloader.cpp src/helpers/objloader.hpp)
+                src/helpers/objloader.cpp src/helpers/objloader.hpp 
+                vendor/objLoader/OBJ_Loader.h)
 
 # Use this insted of target_include_directories, because this is global
 include_directories(src vendor)
@@ -23,6 +24,9 @@ set(ALL_LIBS OpenGL::GL glfw glad dl)
 
 add_executable(example src/example.cpp ${HELPERS_SRC})
 target_link_libraries(example PUBLIC  ${ALL_LIBS})
+
+add_executable(objLoad src/objLoad.cpp ${HELPERS_SRC})
+target_link_libraries(objLoad PUBLIC  ${ALL_LIBS})
 
 add_executable(lab1 src/lab1.cpp ${HELPERS_SRC})
 target_link_libraries(lab1 PUBLIC  ${ALL_LIBS})
