@@ -136,14 +136,14 @@ namespace objl
 	//	a Position, Normal, and Texture Coordinate
 	struct Vertex
 	{
-		// Position Vector
-		Vector3 Position;
+		// Texture Coordinate Vector
+		Vector2 TextureCoordinate;
 
 		// Normal Vector
 		Vector3 Normal;
 
-		// Texture Coordinate Vector
-		Vector2 TextureCoordinate;
+		// Position Vector
+		Vector3 Position;
 	};
 
 	struct Material
