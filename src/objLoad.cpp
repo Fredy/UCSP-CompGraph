@@ -1,12 +1,12 @@
 #include <glad/glad.h>
 #include "helpers/camera.hpp"
-#include <objLoader/OBJ_Loader.h>
 #include <GLFW/glfw3.h>
 #include <array>
 #include <cmath>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include <objLoader/OBJ_Loader.h>
 #include <vector>
 using namespace std;
 
@@ -17,8 +17,8 @@ void frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
   glViewport(0, 0, width, height);
 }
 
-GLFWwindow * initGL() {
- // GLFW initialization
+GLFWwindow *initGL() {
+  // GLFW initialization
   if (!glfwInit()) {
     cout << "GLFW initialization failed\n";
     glfwTerminate();
@@ -50,7 +50,7 @@ GLFWwindow * initGL() {
   }
 
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   glEnable(GL_DEPTH_TEST);
   // Accept fragment if it closer to the camera than the former one
   glDepthFunc(GL_LESS);
@@ -85,8 +85,8 @@ int main() {
     return 1;
   }
 
-  auto vertices = loader.LoadedVertices;
-  auto indices = loader.LoadedIndices;
+  const auto &vertices = loader.LoadedVertices;
+  const auto &indices = loader.LoadedIndices;
 
   // MVP
   glm::mat4 projectionMat = glm::perspective(
@@ -94,7 +94,7 @@ int main() {
   glm::mat4 viewMat = glm::lookAt(glm::vec3{10, 10, 10}, {0, 0, 0}, {0, 1, 0});
   glm::mat4 modelMat = glm::mat4(1.0f);
 
-  Camera camera(window);
+  Camera camera(window, 10.0f);
   // Main loop
   double dt, currentTime, lastTime = 0.0;
   while (!glfwWindowShouldClose(window)) {
@@ -102,24 +102,24 @@ int main() {
     dt = currentTime - lastTime;
     lastTime = currentTime;
 
-
     camera.computeMatrices(dt);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //glMultMatrixf(&projectionMat[0][0]);
+    // glMultMatrixf(&projectionMat[0][0]);
     glMultMatrixf(&camera.getProjectionMatrix()[0][0]);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    //glMultMatrixf(&viewMat[0][0]);
+    // glMultMatrixf(&viewMat[0][0]);
     glMultMatrixf(&camera.getViewMatrix()[0][0]);
 
     drawGizmo();
 
-    glInterleavedArrays(GL_T2F_N3F_V3F, sizeof(objl::Vertex),vertices.data());
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, indices.data());
+    glInterleavedArrays(GL_T2F_N3F_V3F, sizeof(objl::Vertex), vertices.data());
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT,
+                   indices.data());
 
     glfwSwapBuffers(window);
     glfwPollEvents();

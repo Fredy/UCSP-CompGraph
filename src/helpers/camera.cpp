@@ -1,5 +1,11 @@
 #include "camera.hpp"
 
+Camera::Camera(GLFWwindow *window, float speed, float mouseSpeed) {
+  this->window = window;
+  this->speed = speed;
+  this->mouseSpeed = mouseSpeed;
+}
+
 void Camera::computeMatrices(float dt) {
 
   // Get mouse position

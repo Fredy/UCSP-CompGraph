@@ -23,3 +23,6 @@ set(ALL_LIBS OpenGL::GL glfw glad dl)
 
 add_executable(objLoad src/objLoad.cpp ${HELPERS_SRC})
 target_link_libraries(objLoad PUBLIC  ${ALL_LIBS})
+
+add_executable(lab4 src/lab4.cpp ${HELPERS_SRC})
+target_link_libraries(lab4 PUBLIC  ${ALL_LIBS})

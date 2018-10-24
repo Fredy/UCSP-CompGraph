@@ -22,7 +22,7 @@ private:
   float mouseSpeed = 0.0025f;
 
 public:
-  Camera(GLFWwindow *window) { this->window = window; }
+  Camera(GLFWwindow *window, float speed = 30.0f, float mouseSpeed = 0.0025f);
 
   void computeMatrices(float dt);
 
