@@ -8,6 +8,8 @@ set(CMAKE_C_STANDARD 11)
 set(GLAD_SRC vendor/glad/glad.c 
              vendor/glad/glad.h)
 set(HELPERS_SRC src/helpers/camera.cpp src/helpers/camera.hpp
+                src/helpers/texture.cpp src/helpers/texture.hpp
+                src/helpers/imgDummy.cpp
                 vendor/objLoader/OBJ_Loader.h)
 
 # Use this insted of target_include_directories, because this is global
@@ -26,3 +28,6 @@ target_link_libraries(objLoad PUBLIC  ${ALL_LIBS})
 
 add_executable(lab4 src/lab4.cpp ${HELPERS_SRC})
 target_link_libraries(lab4 PUBLIC  ${ALL_LIBS})
+
+add_executable(lightsExample src/lightsExample.cpp ${HELPERS_SRC})
+target_link_libraries(lightsExample PUBLIC  ${ALL_LIBS})
