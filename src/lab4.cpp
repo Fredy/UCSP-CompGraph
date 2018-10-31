@@ -24,9 +24,9 @@ const GLfloat wallSpecular[4] = {0.6f, 0.6f, 0.6f, 1.0f};
 const GLfloat wallShininess = 13.0f;
 
 const GLfloat roofAmbient[4] = {0.4f, 0.4f, 0.4f, 1.0f};
-const GLfloat roofDiffuse[4] = {0.5f, 0.5f, 0.5f, 1.0f};
-const GLfloat roofSpecular[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-const GLfloat roofShininess = 100.0f;
+const GLfloat roofDiffuse[4] = {0.2f, 0.2f, 0.2f, 1.0f};
+const GLfloat roofSpecular[4] = {0.6f, 0.6f, 0.6f, 1.0f};
+const GLfloat roofShininess = 10.0f;
 
 const GLfloat leavesAmbient[4] = {0.4f, 0.4f, 0.4f, 1.0f};
 const GLfloat leavesDiffuse[4] = {0.3f, 0.3f, 0.3f, 1.0f};
@@ -51,7 +51,7 @@ void setupLights() {
   GLfloat Light0Dif[] = {0.9f, 0.9f, 0.9f, 1.0f};
   GLfloat Light0Spec[] = {0.4f, 0.4f, 0.4f, 1.0f};
   // Position values: puntual light.
-  GLfloat Light0Pos[] = {0.0f, 20.0f, 20.0f, 1.0f};
+  GLfloat Light0Pos[] = {0.0f, 20.0f, 20.0f, 0.0f};
   GLfloat direction[] = {0.0, -1.0, -1.0};
 
   // Light0 parameters.
@@ -103,7 +103,7 @@ GLFWwindow *initGL() {
   // Accept fragment if it closer to the camera than the former one
   glDepthFunc(GL_LESS);
   glEnable(GL_CULL_FACE);
-  glEnable(GL_TEXTURE_2D);
+  //glEnable(GL_TEXTURE_2D);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
 
@@ -139,6 +139,7 @@ void drawFloor(GLuint textureId, float width, float height) {
 
   glBindTexture(GL_TEXTURE_2D, textureId);
   glBegin(GL_QUADS);
+  glNormal3f(0,1,0);
   glTexCoord2f(left * texProportion, bottom *texProportion);
   glVertex3f(left, 0, bottom);
 
@@ -168,6 +169,7 @@ void drawWalls(GLuint textureId, float x, float y, float z, float width, float h
   glBegin(GL_QUADS);
 
   glTexCoord2f(0, 0);
+  glNormal3f(0,0,-1);
   glVertex3f(x, y, z);
   glTexCoord2f(0, 8);
   glVertex3f(x, y + height, z);
@@ -177,6 +179,7 @@ void drawWalls(GLuint textureId, float x, float y, float z, float width, float h
   glVertex3f(x + width, y, z);
 
 
+  glNormal3f(0,0,1);
   glTexCoord2f(0, 0);
   glVertex3f(x, y, z + length);
   glTexCoord2f(8, 0);
@@ -186,6 +189,7 @@ void drawWalls(GLuint textureId, float x, float y, float z, float width, float h
   glTexCoord2f(0, 8);
   glVertex3f(x, y + height, z + length);
 
+  glNormal3f(-1,0,0);
   glTexCoord2f(0, 0);
   glVertex3f(x, y, z);
   glTexCoord2f(8, 0);
@@ -195,6 +199,7 @@ void drawWalls(GLuint textureId, float x, float y, float z, float width, float h
   glTexCoord2f(0, 8);
   glVertex3f(x, y + height, z);
 
+  glNormal3f(1,0,0);
   glTexCoord2f(0, 0);
   glVertex3f(x + width, y, z);
   glTexCoord2f(0, 8);
@@ -215,7 +220,7 @@ void drawRoof(GLuint wallTextureId,GLuint roofTextureId, float x, float y, float
 
   glBindTexture(GL_TEXTURE_2D, wallTextureId) ;
   glBegin(GL_TRIANGLES);
-
+  glNormal3f(0, 0, -1);
   glTexCoord2f(0, 0);
   glVertex3f(x, y, z);
   glTexCoord2f(3, 6);
@@ -223,6 +228,7 @@ void drawRoof(GLuint wallTextureId,GLuint roofTextureId, float x, float y, float
   glTexCoord2f(6, 0);
   glVertex3f(x + width, y, z);
 
+  glNormal3f(0, 0, 1);
   glTexCoord2f(0, 0);
   glVertex3f(x, y, z + length);
   glTexCoord2f(6, 0);
@@ -240,6 +246,9 @@ void drawRoof(GLuint wallTextureId,GLuint roofTextureId, float x, float y, float
   glBindTexture(GL_TEXTURE_2D, roofTextureId) ;
   glBegin(GL_QUADS);
 
+  glm::vec3 one(0,0,length);
+  glm::vec3 two(width / 2.0f,height,0);
+  glNormal3fv(&glm::normalize(one * two)[0]);
   glTexCoord2f(0, 0);
   glVertex3f(x, y, z);
   glTexCoord2f(0, 8);
@@ -249,6 +258,9 @@ void drawRoof(GLuint wallTextureId,GLuint roofTextureId, float x, float y, float
   glTexCoord2f(8, 0);
   glVertex3f(x + width /2.0f, y + height, z);
 
+   one = glm::vec3(width / 2.0, height,0);
+   two = glm::vec3(0,0,length);
+  glNormal3fv(&glm::normalize(one * two)[0]);
   glTexCoord2f(0, 0);
   glVertex3f(x + width, y, z);
   glTexCoord2f(8, 0);
