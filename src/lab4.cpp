@@ -24,13 +24,13 @@ const GLfloat wallSpecular[4] = {0.6f, 0.6f, 0.6f, 1.0f};
 const GLfloat wallShininess = 13.0f;
 
 const GLfloat roofAmbient[4] = {0.4f, 0.4f, 0.4f, 1.0f};
-const GLfloat roofDiffuse[4] = {0.2f, 0.2f, 0.2f, 1.0f};
-const GLfloat roofSpecular[4] = {0.6f, 0.6f, 0.6f, 1.0f};
-const GLfloat roofShininess = 10.0f;
+const GLfloat roofDiffuse[4] = {0.6f, 0.6f, 0.6f, 1.0f};
+const GLfloat roofSpecular[4] = {0.8f, 0.8f, 0.8f, 1.0f};
+const GLfloat roofShininess = 100.0f;
 
 const GLfloat leavesAmbient[4] = {0.4f, 0.4f, 0.4f, 1.0f};
 const GLfloat leavesDiffuse[4] = {0.3f, 0.3f, 0.3f, 1.0f};
-const GLfloat leavesSpecular[4] = {0.2f, 0.2f, 0.2f, 1.0f};
+const GLfloat leavesSpecular[4] = {0.9f, 0.9f, 0.9f, 1.0f};
 const GLfloat leavesShininess = 8.0f;
 
 const GLfloat logAmbient[4] = {0.4f, 0.4f, 0.4f};
@@ -38,7 +38,7 @@ const GLfloat logDiffuse[4] = {0.3f, 0.3f, 0.3f, 1.0f};
 const GLfloat logSpecular[4] = {0.2f, 0.2f, 0.2f, 1.0f};
 const GLfloat logShininess = 0.0f;
 
-
+const GLfloat Light0Pos[] = {0.0f, 30.0f, 50.0f, 0.0f};
 
 void frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
   cout << "Width and height: " << width << ", " << height << "\n";
@@ -51,8 +51,6 @@ void setupLights() {
   GLfloat Light0Dif[] = {0.9f, 0.9f, 0.9f, 1.0f};
   GLfloat Light0Spec[] = {0.4f, 0.4f, 0.4f, 1.0f};
   // Position values: puntual light.
-  GLfloat Light0Pos[] = {0.0f, 20.0f, 20.0f, 0.0f};
-  GLfloat direction[] = {0.0, -1.0, -1.0};
 
   // Light0 parameters.
   glLightfv(GL_LIGHT0, GL_AMBIENT, Light0Amb);
@@ -103,7 +101,7 @@ GLFWwindow *initGL() {
   // Accept fragment if it closer to the camera than the former one
   glDepthFunc(GL_LESS);
   glEnable(GL_CULL_FACE);
-  //glEnable(GL_TEXTURE_2D);
+  // glEnable(GL_TEXTURE_2D);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
 
@@ -246,28 +244,28 @@ void drawRoof(GLuint wallTextureId,GLuint roofTextureId, float x, float y, float
   glBindTexture(GL_TEXTURE_2D, roofTextureId) ;
   glBegin(GL_QUADS);
 
-  glm::vec3 one(0,0,length);
-  glm::vec3 two(width / 2.0f,height,0);
-  glNormal3fv(&glm::normalize(one * two)[0]);
+  glm::vec3 one(0, 0, -length);
+  glm::vec3 two(width / 2.0f, height, 0);
+  glNormal3fv(&glm::normalize(glm::cross(two, one))[0]);
   glTexCoord2f(0, 0);
-  glVertex3f(x, y, z);
+  glVertex3f(x, y, z); // 0
   glTexCoord2f(0, 8);
-  glVertex3f(x, y, z + length);
+  glVertex3f(x, y, z + length); // 1
   glTexCoord2f(8, 8);
-  glVertex3f(x + width /2.0f, y + height, z + length);
+  glVertex3f(x + width /2.0f, y + height, z + length); // 2
   glTexCoord2f(8, 0);
   glVertex3f(x + width /2.0f, y + height, z);
 
-   one = glm::vec3(width / 2.0, height,0);
-   two = glm::vec3(0,0,length);
-  glNormal3fv(&glm::normalize(one * two)[0]);
+  one = glm::vec3(width / 2.0f, -height, 0);
+  two = glm::vec3(0, 0, length);
+  glNormal3fv(&glm::normalize(glm::cross(two, one))[0]);
   glTexCoord2f(0, 0);
-  glVertex3f(x + width, y, z);
+  glVertex3f(x + width, y, z); // 0
   glTexCoord2f(8, 0);
-  glVertex3f(x + width /2.0f, y + height, z);
+  glVertex3f(x + width /2.0f, y + height, z); // 1
   glTexCoord2f(8, 8);
-  glVertex3f(x + width /2.0f, y + height, z + length);
-  glTexCoord2f(0, 8);
+  glVertex3f(x + width /2.0f, y + height, z + length); // 2
+  glTexCoord2f(0, 8); 
   glVertex3f(x + width, y, z + length);
 
   glEnd();
@@ -389,7 +387,6 @@ int main() {
     glPushMatrix();
     tmp += vel * dt;
     glRotatef(tmp, 0.0f, 1.0f, 0.0f);
-    GLfloat Light0Pos[] = {0.0f, 0.0f, 20.0f, 1.0f};
     glLightfv(GL_LIGHT0, GL_POSITION, Light0Pos);
     glPopMatrix();
 
