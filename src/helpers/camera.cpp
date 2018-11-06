@@ -60,6 +60,6 @@ void Camera::computeMatrices(float dt) {
   }
 
   projectionMatrix = glm::perspective(glm::radians(45.0f),
-                                      float(width) / height, 0.1f, 1000.0f);
+                                      float(width) / height, 0.1f, 100000.0f);
   viewMatrix = glm::lookAt(position, position + direction, up);
 }

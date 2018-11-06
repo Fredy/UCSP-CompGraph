@@ -29,5 +29,8 @@ target_link_libraries(objLoad PUBLIC  ${ALL_LIBS})
 add_executable(lab4 src/lab4.cpp ${HELPERS_SRC})
 target_link_libraries(lab4 PUBLIC  ${ALL_LIBS})
 
+add_executable(lab5 src/lab5/lab5.cpp ${HELPERS_SRC})
+target_link_libraries(lab5 PUBLIC  ${ALL_LIBS})
+
 add_executable(lightsExample src/lightsExample.cpp ${HELPERS_SRC})
 target_link_libraries(lightsExample PUBLIC  ${ALL_LIBS})

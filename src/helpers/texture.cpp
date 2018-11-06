@@ -6,6 +6,7 @@
 namespace texture {
 
 unsigned int load(const string &path) {
+  stbi_set_flip_vertically_on_load(true);
   unsigned int textureId;
   glGenTextures(1, &textureId);
   glBindTexture(GL_TEXTURE_2D, textureId);
